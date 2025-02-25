@@ -3,7 +3,7 @@ name: Build and Push Docker image to Docker Hub
 on:
   push:
     branches:
-      - master# Trigger this action on push to the main branch, you can change it to your default branch
+      - master # Trigger this action on push to the main branch, you can change it to your default branch
 
 jobs:
   build:
