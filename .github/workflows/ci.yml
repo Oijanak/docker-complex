@@ -1,0 +1,42 @@
+name: Build and Push Docker image to Docker Hub
+
+on:
+  push:
+    branches:
+      - master# Trigger this action on push to the main branch, you can change it to your default branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step 3: Log in to DockerHub using Personal Access Token
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }} # Docker Hub username
+          password: ${{ secrets.DOCKER_PASSWORD }} # Personal Access Token (PAT)
+
+      # Step 4: Build the Docker image
+      - name: Build Docker image
+        run: |
+          docker build -t oijanak/react-client:latest ./client
+          docker build -t oijanak/node-server:latest ./server
+          docker build -t oijanak/node-worker:latest ./worker
+          docker build -t oijanak/nginx-server:latest ./nginx
+
+      # Step 5: Push the Docker image to Docker Hub
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push oijanak/nginx-server:latest
+          docker push oijanak/node-server:latest
+          docker push oijanak/node-worker:latest
+          docker push oijanak/react-client:latest
